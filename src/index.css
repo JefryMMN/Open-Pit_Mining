@@ -1,0 +1,774 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+@import 'leaflet/dist/leaflet.css';
+
+:root {
+  --header-bg: #1e3a5f;
+  --header-dark: #15293f;
+  --btn-primary: #2563eb;
+  --btn-danger: #dc2626;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* LOGIN PAGE - MINING PIT STYLE */
+.login-page {
+  min-height: 100vh;
+  /* Open Pit Mining Background - Final User Provided */
+  background: url('/login-bg-final.jpg') center/cover no-repeat;
+  background-color: #2d3748;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.25);
+  /* Slight dark tint for text readability */
+  z-index: 0;
+}
+
+.login-floating-title {
+  position: absolute;
+  top: 60px;
+  color: white;
+  font-size: 28px;
+  font-weight: 700;
+  z-index: 10;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  text-align: center;
+  width: 100%;
+  letter-spacing: 0.5px;
+}
+
+.login-container {
+  z-index: 10;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+.login-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.85);
+  /* Semi-transparent white */
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #1a202c;
+  backdrop-filter: blur(4px);
+  transition: all 0.2s;
+}
+
+.login-input::placeholder {
+  color: #555;
+  font-weight: 500;
+}
+
+.login-input:focus {
+  outline: none;
+  background: white;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8);
+}
+
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background: #0f2443;
+  /* Dark Navy Button */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: background 0.2s;
+}
+
+.login-btn:hover {
+  background: #1a365d;
+}
+
+.login-footer-text {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  margin-top: 12px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Login Validation Styles */
+.login-field {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.login-input.input-error {
+  border: 2px solid #ef4444;
+  background: rgba(254, 226, 226, 0.95);
+}
+
+.login-input.input-error::placeholder {
+  color: #b91c1c;
+}
+
+.error-text {
+  color: #fecaca;
+  font-size: 11px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  padding-left: 4px;
+}
+
+/* DASHBOARD STYLES */
+.dashboard {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-header {
+  background: var(--header-bg);
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  color: white;
+}
+
+.dashboard-header .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dashboard-header h1 {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.dashboard-content {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* COORD PANEL - Exact Match */
+.coord-panel {
+  width: 250px;
+  background: white;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  z-index: 20;
+}
+
+.coord-panel .panel-header {
+  background: linear-gradient(180deg, #1e3a5f 0%, #172e4d 100%);
+  color: white;
+  padding: 10px 15px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.coord-input-list {
+  padding: 15px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.coord-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  background: white;
+}
+
+.coord-labels {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 15px;
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+
+.coord-label {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.coord-row .label-text {
+  width: 60px;
+  font-size: 12px;
+  color: #334155;
+  font-weight: 500;
+}
+
+.coord-inputs {
+  flex: 1;
+  display: flex;
+  gap: 8px;
+}
+
+.coord-inputs input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #1e293b;
+}
+
+.coord-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.btn-blue {
+  background: var(--header-bg);
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-gray {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-gold {
+  background: #d97706;
+  /* matches Draw Boundary orange/gold */
+  color: white;
+  border: none;
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.map-container {
+  flex: 1;
+  position: relative;
+}
+
+/* ANALYSIS SUMMARY PANEL */
+.summary-panel {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 220px;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.summary-header {
+  background: white;
+  padding: 10px 15px;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.summary-header h3 {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e3a5f;
+  margin: 0;
+}
+
+.summary-body {
+  padding: 15px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.summary-label {
+  color: #64748b;
+}
+
+.summary-val {
+  font-weight: 600;
+  color: #334155;
+}
+
+.text-red {
+  color: #ef4444;
+}
+
+/* REPORT OVERLAY PANEL */
+.report-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  height: 200px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.report-header {
+  background: var(--header-bg);
+  color: white;
+  padding: 8px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.report-header h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.report-icons {
+  display: flex;
+  gap: 10px;
+}
+
+.report-content {
+  flex: 1;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1.5fr;
+  gap: 30px;
+}
+
+.report-col h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e3a5f;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  margin-bottom: 6px;
+  color: #475569;
+}
+
+.box-yellow {
+  width: 12px;
+  height: 12px;
+  background: #fef08a;
+  border: 1px solid #ca8a04;
+}
+
+.box-green {
+  width: 12px;
+  height: 12px;
+  background: rgba(34, 197, 94, 0.4);
+  border: 1px solid #22c55e;
+}
+
+.box-red {
+  width: 12px;
+  height: 12px;
+  background: rgba(239, 68, 68, 0.4);
+  border: 1px solid #ef4444;
+}
+
+/* Custom Map Popup */
+.leaflet-popup-content {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+}
+
+/* Run Analysis Button */
+.run-analysis-btn {
+  position: absolute;
+  bottom: 220px;
+  /* Position above the Report Panel */
+  right: 20px;
+  background: var(--btn-primary);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: background 0.2s;
+}
+
+.run-analysis-btn:hover {
+  background: #1d4ed8;
+}
+
+.run-analysis-btn:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* Shake Animation for Validation */
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-4px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+.coord-inputs input.error {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.coord-inputs input.error::placeholder {
+  color: #ef4444;
+}
+
+.validation-message {
+  color: #ef4444;
+  font-size: 11px;
+  margin-top: 8px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* ========== MOBILE RESPONSIVE STYLES ========== */
+
+/* Mobile Toggle Button for Coordinate Panel */
+.mobile-panel-toggle {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--header-bg);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 1100;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+
+  /* Show mobile toggle button */
+  .mobile-panel-toggle {
+    display: block;
+  }
+
+  /* Dashboard content stacks vertically */
+  .dashboard-content {
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* Coordinate Panel - Collapsible Bottom Sheet Style */
+  .coord-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 55vh;
+    max-height: 55vh;
+    border-right: none;
+    border-top: 2px solid #e2e8f0;
+    border-radius: 16px 16px 0 0;
+    z-index: 1100;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .coord-panel.open {
+    transform: translateY(0);
+  }
+
+  .coord-panel .panel-header {
+    padding: 15px;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .coord-panel .panel-header::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 2px;
+  }
+
+  .panel-close-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 8px;
+    margin-left: auto;
+  }
+
+  .coord-input-list {
+    padding: 15px;
+    padding-bottom: 100px;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .coord-row {
+    margin-bottom: 12px;
+  }
+
+  .coord-row .label-text {
+    width: 55px;
+    font-size: 11px;
+  }
+
+  .coord-inputs {
+    gap: 6px;
+  }
+
+  .coord-inputs input {
+    padding: 10px 8px;
+    font-size: 14px;
+  }
+
+  .coord-actions {
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .btn-blue,
+  .btn-gray {
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  .btn-gold {
+    padding: 12px;
+    font-size: 13px;
+    margin-top: 12px;
+  }
+
+  /* Map takes full height */
+  .map-container {
+    height: calc(100vh - 50px);
+    width: 100%;
+  }
+
+  /* Header adjustments */
+  .dashboard-header {
+    padding: 0 12px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 13px;
+  }
+
+  /* Analysis Summary Panel */
+  .summary-panel {
+    top: 10px;
+    right: 10px;
+    width: 180px;
+  }
+
+  .summary-header h3 {
+    font-size: 12px;
+  }
+
+  .summary-body {
+    padding: 10px;
+  }
+
+  .summary-row {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+
+  /* Report Panel - hide when coord panel is open */
+  .report-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: auto;
+    max-height: 50vh;
+    z-index: 1000;
+    border-radius: 12px 12px 0 0;
+    overflow-y: auto;
+  }
+
+  /* Hide report panel when coordinate panel is open */
+  .coord-panel.open~.map-container .report-panel,
+  body:has(.coord-panel.open) .report-panel {
+    display: none;
+  }
+
+  .report-content {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 12px;
+    overflow-y: auto;
+  }
+
+  .report-col h4 {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .legend-row {
+    font-size: 11px;
+  }
+
+  /* Run Analysis Button */
+  .run-analysis-btn {
+    bottom: 180px;
+    right: 10px;
+    padding: 10px 18px;
+    font-size: 12px;
+  }
+
+  /* When report is hidden, adjust button position */
+  .run-analysis-btn.no-report {
+    bottom: 80px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .coord-panel {
+    max-height: 70vh;
+  }
+
+  .summary-panel {
+    width: 160px;
+    top: 8px;
+    right: 8px;
+  }
+
+  .summary-header {
+    padding: 8px 10px;
+  }
+
+  .summary-header h3 {
+    font-size: 11px;
+  }
+
+  .summary-body {
+    padding: 8px;
+  }
+
+  .summary-row {
+    font-size: 10px;
+  }
+
+  .report-panel {
+    height: 140px;
+  }
+
+  .report-header h3 {
+    font-size: 12px;
+  }
+
+  .mobile-panel-toggle {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+}
