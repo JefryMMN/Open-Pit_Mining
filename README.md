@@ -4,6 +4,8 @@
 Download the trained model (.pth) here: 
 https://drive.google.com/file/d/1XZWmpTVpRrJXylYAHts82UYLHdrXNagm/view?usp=drive_link
 
+## Project Setup
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
